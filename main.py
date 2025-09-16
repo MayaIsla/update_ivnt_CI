@@ -9,6 +9,9 @@ import os
 pd.options.display.max_colwidth = 1000
 pd.set_option('display.float_format', lambda x: '%.3f' % x)
 
+excel_file_path = "C:/dir/to/file/report.xlsx" #I will have to build the directory / file name here...
+csv_file_path = "C:/dir/to/file/report.csv"
+archive_file_path = "C:/alt/dir/to/file/report.csv"
 datetime_Format = "{:%Y-%m-%d}".format(datetime.now())
 
 with open('C:/ivnt_encode.txt', 'rb') as ivnt_key:
@@ -19,6 +22,9 @@ api_uri = "https://tenant.saasit.com/api/odata/businessobject/CIs"
 iv_auth_header = {'Authorization': ivnt_api__Key}
 
 newpath = "C:/Logs"
+
+excel_report = pd.read_excel(excel_file_path, header=0)
+csv_DF = excel_report.to_csv(csv_file_path) #Converted to CSV.
 
 original_df = pd.read_csv("C:/IMEI.csv", index_col=False)
 df = original_df.drop(["Suspend Date", "Primary Number Y or N", "Designated Employee"], axis=1)
@@ -61,7 +67,9 @@ for row in df.itertuples():
          text_CSV =  request_ivnt_phone_exists.text
          with open("C:/Logs/file.csv","w") as file:
             file.write(text_CSV + "\n")
-
+           
+#Move to archive once script is complete.
+os.rename(csv_file_path, archive_file_path)
       
    #body_response = str('{"MACAddress": ' + '"' + ivnt_phone_number + '","Name":' + '"' +  ivnt_IMEI + '","SerialNumber":' + '"' + ivnt_phone_number + '","LoginName":' + '"' + ivnt_loginID + '","Status": "Assigned",' + '"ivnt_AssetSubtype": "Mobile Phone' +  '","CIType": "ivnt_Infrastructure"' + ',"Model":' + '"' + ivnt_phone_model+ '"' +"}")
    #update_CI = requests.post(url=api_uri, data= body_response, headers=iv_auth_header)
